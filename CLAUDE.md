@@ -95,3 +95,4 @@ The container serves on `127.0.0.1:4200`, and host nginx proxies `leonardom011.c
 ## Notes
 
 - `jellyfin` uses `runtime: nvidia` for NVENC, so the NVIDIA container toolkit has to be present on the laptop.
+- `radicale` (tomsquest image) runs as uid/gid 2999, and `./config` is mounted `:ro`, so the entrypoint doesn't chown it. On the VPS, `~/radicale/config/` and both files in it must be group `2999` (dir `0750`, files `0640`). The laptop copies are `1000:1000`, so copying them over with ownership preserved (`rsync -a`, `cp -a`) crashloops the container with `Permission denied: '/config/config'`. Fix: `sudo chgrp 2999 ~/radicale/config/{config,users}`.
