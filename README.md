@@ -41,7 +41,6 @@ You need Docker with the Compose plugin.
    ```sh
    cp cloud/vikunja/example.env cloud/vikunja/.env
    cp cloud/paperless/example.env cloud/paperless/.env
-   cp cloud/paperless/docker-compose.example.env cloud/paperless/docker-compose.env
    # ...and the same for cloud/borgmatic and cloud/obsidian
    ```
 

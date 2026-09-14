@@ -21,8 +21,8 @@
 #
 # To install and update paperless with this file, do the following:
 #
-# - Copy this file as 'docker-compose.yml' and the files 'docker-compose.env'
-#   and '.env' into a folder.
+# - Copy this file as 'docker-compose.yml' into a folder and create '.env'
+#   there from 'example.env'.
 # - Run 'docker compose pull'.
 # - Run 'docker compose up -d'.
 #
@@ -58,7 +58,7 @@ services:
       - ./media:/usr/src/paperless/media
       - ./export:/usr/src/paperless/export  # filled nightly by ../ofelia/config.ini
       - ./consume:/usr/src/paperless/consume
-    env_file: docker-compose.env
+    env_file: .env
     environment:
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db

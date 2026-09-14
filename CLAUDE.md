@@ -17,14 +17,14 @@ On the VPS there's no `cloud/` level: each stack lives at `~/<stack>/`. That pla
 
 Live data and secrets sit next to the compose files (paths relative to `cloud/`, except jellyfin and jackett, which are under `local/`):
 
-- **Secrets:** `borgmatic/ssh/hetzner_borg` (private key), `borgmatic/config/borg-passphrase`, `*/.env`, `paperless/docker-compose.env` (`PAPERLESS_SECRET_KEY`), `radicale/config/users`, `obsidian/couchdb-etc/` (CouchDB writes the admin hash here).
+- **Secrets:** `borgmatic/ssh/hetzner_borg` (private key), `borgmatic/config/borg-passphrase`, `*/.env` (paperless's holds `PAPERLESS_SECRET_KEY` and does double duty: compose interpolation and the webserver's `env_file`), `radicale/config/users`, `obsidian/couchdb-etc/` (CouchDB writes the admin hash here).
 - **Personal data:** `paperless/{data,media,export,consume}` (scanned personal documents), `actual/data`, `radicale/data`, `obsidian/couchdb-data`, `vikunja/{files,backups}`, `jellyfin/{config,cache}`, `jackett/config`, `borgmatic/{cache,state,backup.log}`.
 
 `.gitignore` ignores every top-level directory except `cloud/` and `local/`, and everything inside a stack directory unless a `!` rule re-includes it. When adding a stack under `cloud/` or `local/`, its compose file is tracked automatically. Any other config file needs its own `!` line. Never re-include a whole stack directory. Don't print the contents of secret files; read key names only if you need them.
 
 **This repo is public.** Put identifying or secret values (passwords, account names such as the Storage Box user) in the stack's gitignored `.env`. Reference them in tracked files as `${VAR:?set VAR in .env}`, so a missing value stops `docker compose up` instead of starting with an empty value. The tailnet name `tail81798e` is already public through Tailscale's Certificate Transparency entries, so it's fine to keep.
 
-Every gitignored env file has a committed example next to it with the same keys and placeholder values: `example.env` for `.env`, and `docker-compose.example.env` for paperless's `docker-compose.env`. When you add or rename a variable, update the example in the same change.
+Every gitignored env file has a committed example next to it with the same keys and placeholder values: `example.env` for each `.env`. When you add or rename a variable, update the example in the same change.
 
 ## Commands
 
@@ -73,7 +73,7 @@ The container serves on `127.0.0.1:4200`, and host nginx proxies `leonardom011.c
 - **Timezone:** defined once per host.
   - Laptop stacks interpolate `${TZ:?...}` from `local/.env`, through the same `.env -> ../.env` symlinks as `LAN_IP`.
   - Cloud stacks load `env_file: ../common.env`. It's tracked as `cloud/common.env`; on the VPS it's `~/common.env`. It also sets `VIKUNJA_SERVICE_TIMEZONE`. If it's missing, `docker compose up` fails, so it has to be on the VPS before any compose file that references it. It's public, so never put secrets in it.
-  - Paperless is the exception: `PAPERLESS_TIME_ZONE` in its own `docker-compose.env`.
+  - Paperless is the exception: `PAPERLESS_TIME_ZONE` in its own `.env`.
 - **`torrent-network`:** an external network that jackett and flaresolverr both join. It must already exist (`docker network create torrent-network`). Jackett reaches FlareSolverr at `http://flaresolverr:8191`.
 - **Container names other files depend on:** renaming either of these silently breaks the nightly dumps.
   - `paperless-webserver-1` comes from `COMPOSE_PROJECT_NAME` in `cloud/paperless/.env`. It's used by `cloud/backup.sh` and `cloud/ofelia/config.ini`.

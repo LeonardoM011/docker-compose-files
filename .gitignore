@@ -47,4 +47,3 @@
 # Example env files (placeholders only). Must also come after `*.env`.
 !/local/example.env
 !/cloud/*/example.env
-!/cloud/*/*.example.env
