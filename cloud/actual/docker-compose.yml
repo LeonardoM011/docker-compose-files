@@ -1,0 +1,20 @@
+# ~/actual/docker-compose.yml
+services:
+  actual:
+    image: actualbudget/actual-server:latest
+    container_name: actual
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5006:5006"
+    volumes:
+      - ./data:/data
+    env_file: ../common.env
+    environment:
+      - ACTUAL_TRUSTED_PROXIES=127.0.0.1
+      - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=20
+      - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
+    healthcheck:
+      test: ["CMD-SHELL", "node /app/src/scripts/health-check.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
