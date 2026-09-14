@@ -1,0 +1,29 @@
+services:
+  borgmatic:
+    image: ghcr.io/borgmatic-collective/borgmatic:latest
+    container_name: borgmatic
+    restart: unless-stopped
+    volumes:
+      # What to back up (read-only)
+      - /home:/home:ro
+
+      # Borgmatic config
+      - ./config/config.yaml:/etc/borgmatic/config.yaml:ro
+      - ./config/crontab.txt:/etc/borgmatic.d/crontab.txt:ro
+
+      # Passphrase
+      - ./config/borg-passphrase:/root/.borg-passphrase:ro
+
+      # SSH key
+      - ./ssh/hetzner_borg:/root/.ssh/hetzner_borg:ro
+      - ./ssh/hetzner_borg.pub:/root/.ssh/hetzner_borg.pub:ro
+
+      # Persistent borg cache and state
+      - ./cache:/root/.cache/borg
+      - ./config:/root/.config/borg
+      - ./state:/root/.local/state/borgmatic
+    env_file: ../common.env
+    environment:
+      # Expanded by borgmatic in config.yaml (repository path)
+      - STORAGEBOX_USER=${STORAGEBOX_USER:?set STORAGEBOX_USER in .env}
+      #      - BACKUP_CRON=0 2 * * 0 # Sundays at 02:00

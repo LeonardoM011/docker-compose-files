@@ -1,0 +1,8 @@
+services:
+  terminal-portfolio:
+    image: leonardom011-terminal-portfolio
+    pull_policy: never
+    container_name: leonardom011-terminal-portfolio
+    ports:
+      - "127.0.0.1:4200:80"
+    restart: unless-stopped

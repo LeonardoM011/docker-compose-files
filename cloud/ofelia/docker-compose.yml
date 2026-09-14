@@ -1,0 +1,12 @@
+# Shared job scheduler for the cloud stacks. Jobs are static [job-exec] sections
+# in config.ini that target containers by name, not container labels.
+services:
+  ofelia:
+    image: mcuadros/ofelia:0.3.21
+    container_name: ofelia
+    command: daemon --config=/etc/ofelia.conf
+    env_file: ../common.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config.ini:/etc/ofelia.conf:ro
+    restart: unless-stopped

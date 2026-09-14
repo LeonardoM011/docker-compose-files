@@ -1,0 +1,22 @@
+---
+services:
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:?set TZ in local/.env}
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS= #optional
+    volumes:
+      - ./config:/config
+    ports:
+      - 127.0.0.1:9117:9117
+    networks: 
+      - torrent-network
+    restart: unless-stopped
+networks:
+  torrent-network:
+    name: torrent-network
+    external: true

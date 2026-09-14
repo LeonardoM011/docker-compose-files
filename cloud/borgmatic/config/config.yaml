@@ -1,0 +1,32 @@
+source_directories:
+  - /home
+
+repositories:
+  - path: ssh://${STORAGEBOX_USER}@${STORAGEBOX_USER}.your-storagebox.de:23/./home
+    label: storagebox
+
+encryption_passcommand: "cat /root/.borg-passphrase"
+
+ssh_command: ssh -p 23 -i /root/.ssh/hetzner_borg -o StrictHostKeyChecking=accept-new
+
+compression: lz4
+
+exclude_caches: true
+exclude_patterns:
+  - '*/.cache/*'
+  - '*/.tmp/*'
+  - '*/__pycache__/*'
+  - '*/node_modules/*'
+  - '*.pyc'
+
+archive_name_format: 'home-{now:%Y-%m-%d_%H:%M:%S}'
+
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 6
+
+checks:
+  - name: repository
+    frequency: 2 weeks
+  - name: archives
+    frequency: 1 month

@@ -1,0 +1,19 @@
+---
+services:
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_HTML=${LOG_HTML:-false}
+      - CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      - TZ=${TZ:?set TZ in local/.env}
+    ports:
+      - 127.0.0.1:8191:8191
+    networks: 
+      - torrent-network
+    restart: unless-stopped 
+networks:
+  torrent-network:
+    name: torrent-network
+    external: true

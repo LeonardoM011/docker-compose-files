@@ -1,0 +1,50 @@
+# Allowlist. Stack dirs hold live data, secrets and .env files next to the
+# compose files, so everything is ignored unless re-included below:
+#   - top-level dirs other than cloud/ and local/ are ignored outright
+#   - inside cloud/<stack>/ and local/<stack>/ only compose files are tracked
+# Add a `!` line when another config file should be tracked.
+/*/
+!/cloud/
+!/local/
+/*/*/*
+
+# Compose files
+!/*/*/docker-compose.yml
+!/*/*/docker-compose.yaml
+
+# Scripts and per-stack config worth tracking
+!/cloud/backup.sh
+!/cloud/ofelia/config.ini
+!/cloud/prometheus/prometheus.yml
+!/cloud/radicale/config/
+/cloud/radicale/config/*
+!/cloud/radicale/config/config
+!/cloud/obsidian/local.ini
+!/cloud/vikunja/backup/
+
+# borgmatic/config/ is also mounted as borg's config dir (/root/.config/borg),
+# so borg writes its own state there — track only the two authored files.
+!/cloud/borgmatic/config/
+/cloud/borgmatic/config/*
+!/cloud/borgmatic/config/config.yaml
+!/cloud/borgmatic/config/crontab.txt
+
+# Claude Code project settings (shared), but not personal overrides
+!/.claude/
+!/.claude/**
+/.claude/settings.local.json
+
+# Belt and braces: secrets stay ignored even if a rule above is widened.
+.env
+*.env
+*passphrase*
+/cloud/borgmatic/ssh/
+/cloud/radicale/config/users
+
+# Shared non-secret settings for the cloud stacks (TZ). Must come after `*.env`.
+!/cloud/common.env
+
+# Example env files (placeholders only). Must also come after `*.env`.
+!/local/example.env
+!/cloud/*/example.env
+!/cloud/*/*.example.env
