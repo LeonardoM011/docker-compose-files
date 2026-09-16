@@ -10,3 +10,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./config.ini:/etc/ofelia.conf:ro
     restart: unless-stopped
+    # No HTTP endpoint in 0.3.21, so the daemon process is all there is to check.
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep ofelia >/dev/null"]
+      interval: 60s
+      start_interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

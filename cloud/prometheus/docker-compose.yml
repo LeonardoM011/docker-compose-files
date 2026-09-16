@@ -14,6 +14,12 @@ services:
     ports:
       - "127.0.0.1:9090:9090"
     networks: [monitoring]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -42,6 +48,12 @@ services:
       - --collector.processes
     volumes:
       - /:/host:ro,rslave
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:9100/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
   docker-state-exporter:
     image: karugaru/docker_state_exporter:latest
@@ -51,6 +63,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks: [monitoring]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
 volumes:
   prometheus_data:

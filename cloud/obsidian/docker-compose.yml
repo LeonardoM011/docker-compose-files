@@ -12,3 +12,11 @@ services:
       - ./local.ini:/opt/couchdb/etc/local.ini
     ports:
       - "127.0.0.1:${COUCHDB_PORT:-5984}:5984"
+    # require_valid_user is on, so even /_up needs the admin credentials.
+    # $$ keeps the expansion in the container's shell, not in compose.
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null -u \"$$COUCHDB_USER:$$COUCHDB_PASSWORD\" http://127.0.0.1:5984/_up"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

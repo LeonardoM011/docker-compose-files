@@ -18,6 +18,13 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    # The image ships no shell, so this has to be the exec form of vikunja's own CLI.
+    healthcheck:
+      test: ["CMD", "/app/vikunja/vikunja", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   db:
     image: postgres:18

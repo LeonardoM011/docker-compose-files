@@ -13,6 +13,12 @@ services:
       - ./config:/config
     ports:
       - 127.0.0.1:9117:9117
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:9117/UI/Login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks: 
       - torrent-network
     restart: unless-stopped
