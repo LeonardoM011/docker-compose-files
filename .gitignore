@@ -12,6 +12,9 @@
 !/*/*/docker-compose.yml
 !/*/*/docker-compose.yaml
 
+# Docker files
+!/*/*/Dockerfile
+
 # Scripts and per-stack config worth tracking
 !/cloud/backup.sh
 !/cloud/ofelia/config.ini
